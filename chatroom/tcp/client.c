@@ -10,11 +10,6 @@
 #define MAX_SIZE 2048
 #define ADDRESS_SIZE 20
 #define MY_ERROR(s) printf(s); system("PAUSE"); exit(1);
-#define PRINT_MENU printf("|------------------- MENU ------------------|\n|[r] Read all existing messages.            |\n|[w] Write a new message.                   |\n|[c] Clear all messages.                    |\n|[q] Disconnect.                            |\n|-------------------------------------------|\n Please select your option: ");
-#define PRINT_INVALID_CHOICE printf(" Invalid choice, please select your option: ");
-#define PRINT_NEW_MSG_HINT printf(" Type a new message:\n ");
-#define PRINT_NEW_MSG_SUC printf(" New message sent.\n");
-#define PRINT_CLEAR_ALL_SUC printf(" All messages is cleared.\n");
 #define DISCONNECT(p) printf(" Good bye!\n"); close(p); return 0;
 
 int main(int argc , char *argv[]) {
@@ -33,8 +28,8 @@ int main(int argc , char *argv[]) {
 
 	memset(&serverAddress, 0, sizeof(serverAddress));
 	serverAddress.sin_family = AF_INET;
-	serverAddress.sin_addr.s_addr = inet_addr(serverAddressStr); // transform to 32-bit unsigned integer
-	serverAddress.sin_port = htons(serverPort); //converts a u_short from host to TCP/IP network byte order
+	serverAddress.sin_addr.s_addr = inet_addr(serverAddressStr);
+	serverAddress.sin_port = htons(serverPort);
 	
 	serverSocket = socket(AF_INET, SOCK_STREAM, 0);
 	if (connect(serverSocket, (struct sockaddr*)&serverAddress, sizeof(serverAddress)) < 0) {
@@ -46,10 +41,10 @@ int main(int argc , char *argv[]) {
 		buf[0] = '\0';
 		while (buf[0] != 'X') bytesRead = recv(serverSocket, buf, sizeof(buf), 0);
 
-		PRINT_MENU;
+		// PRINT_MENU;
 		scanf("%s", buf);
 		while ((buf[0] != 'r' && buf[0] != 'w' && buf[0] != 'c' && buf[0] != 'q') || buf[1] != '\0') {
-			PRINT_INVALID_CHOICE;
+			// PRINT_INVALID_CHOICE;
 			scanf("%s", buf);
 		}
 		if (buf[0] == 'q') {
@@ -78,19 +73,19 @@ int main(int argc , char *argv[]) {
 			buf[0] = '\0';
 			while (buf[0] != 'X') recv(serverSocket, buf, sizeof(buf), 0);
 
-			PRINT_NEW_MSG_HINT;
+			// PRINT_NEW_MSG_HINT;
 			scanf("%s", buf);
 			send(serverSocket, buf, sizeof(buf), 0);
 
 			buf[0] = '\0';
 			while (buf[0] != 'X') recv(serverSocket, buf, sizeof(buf), 0);
 
-			PRINT_NEW_MSG_SUC;
+			// PRINT_NEW_MSG_SUC;
 		}
 		else if (buf[0] == 'c') {
 			buf[0] = '\0';
 			while (buf[0] != 'X') bytesRead = recv(serverSocket, buf, sizeof(buf), 0);
-			PRINT_CLEAR_ALL_SUC;
+			// PRINT_CLEAR_ALL_SUC;
 		}
 	}
 	DISCONNECT(serverPort);

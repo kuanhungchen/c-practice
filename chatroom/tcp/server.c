@@ -9,9 +9,6 @@
 
 #define MAX_SIZE 2048
 #define MY_ERROR(s) printf(s); system("PAUSE"); exit(1);
-#define PRINT_READ_SUC printf("All messages sent.\n");
-#define PRINT_UPDATE_SUC printf("A new message updated.\n");
-#define PRINT_CLEAR_ALL_SUC printf("All messages cleared.\n");
 
 int main(int argc , char *argv[]) {
 	int serverSocket = 0, clientSocket = 0;
@@ -65,7 +62,7 @@ int main(int argc , char *argv[]) {
 			for (int i = 0; i < numberOfExistedMsgs; i++) {
 				send(clientSocket, existedMsgs[i], sizeof(existedMsgs[i]), 0);
 			}
-			PRINT_READ_SUC;
+			// PRINT_READ_SUC;
 
 			usleep(500);
 			send(clientSocket, specialMsg, sizeof(specialMsg), 0);
@@ -77,14 +74,14 @@ int main(int argc , char *argv[]) {
 			bytesRead = recv(clientSocket, buf, sizeof(buf), 0);
 			strcpy(existedMsgs[numberOfExistedMsgs], buf);
 			numberOfExistedMsgs += 1;
-			PRINT_UPDATE_SUC;
+			// PRINT_UPDATE_SUC;
 
 			usleep(500);
 			send(clientSocket, specialMsg, sizeof(specialMsg), 0);
 		}
 		else if (buf[0] == 'c') {
 			numberOfExistedMsgs = 0;
-			PRINT_CLEAR_ALL_SUC;
+			// PRINT_CLEAR_ALL_SUC;
 
 			usleep(500);
 			send(clientSocket, specialMsg, sizeof(specialMsg), 0);
