@@ -22,16 +22,6 @@ int main(int argc , char *argv[]) {
 	}
 
 	char specialMsg[] = "X\0";
-
-	char existedMsgs[100][MAX_SIZE];
-	char tmp[] = "This is message X";
-	int numberOfExistedMsgs = 5;
-	for (int i = 0; i < numberOfExistedMsgs; i++) {
-		tmp[16] = i + 1 + '0';
-		tmp[17] = '\0';
-		strcpy(existedMsgs[i], tmp);
-	}
-
 	serverSocket = socket(PF_INET , SOCK_STREAM , 0);
 	serverAddress.sin_family = AF_INET;
 	serverAddress.sin_addr.s_addr = INADDR_ANY;
@@ -43,49 +33,67 @@ int main(int argc , char *argv[]) {
 	if (listen(serverSocket, 3) < 0) {
 		MY_ERROR("Listen Error\n");
 	}
+
+	int clients[3];
 	
-	printf("Waiting for connection...\n");
-	clientAddressLen = sizeof(clientAddress);
-	clientSocket = accept(serverSocket, (struct sockaddr*)&clientAddress, &clientAddressLen);
 	
-	printf("Successfully connected, client IP is: %s\n", inet_ntoa(clientAddress.sin_addr));
+	for (int i=0; i<2; i++) {
+		printf("Waiting for connection...\n");
+		clientAddressLen = sizeof(clientAddress);
+		clientSocket = accept(serverSocket, (struct sockaddr*)&clientAddress, &clientAddressLen);
+	
+		printf("%d\n", clientSocket);
+		printf("Successfully connected, client IP is: %s\n", inet_ntoa(clientAddress.sin_addr));
+	}
+	
 
 	while (1) {
 		
 		usleep(500);
 		send(clientSocket, specialMsg, sizeof(specialMsg), 0);
-		bytesRead = recv(clientSocket, buf, sizeof(buf), 0);		
-		if (buf[0] == 'r') {
-			buf[0] = '\0';
-			while (buf[0] != 'X') recv(clientSocket, buf, sizeof(buf), 0);
+
+		buf[0] = '\0';
+		usleep(500);
+		// receive from client
+		bytesRead = recv(clientSocket, buf, sizeof(buf), 0);
+		printf("Received from client: %s", buf);
+
+		usleep(500);
+		// send back to client
+		send(clientSocket, buf, sizeof(buf), 0);
+		printf("Sent to client: %s", buf);
+
+		// if (buf[0] == 'r') {
+		// 	buf[0] = '\0';
+		// 	while (buf[0] != 'X') recv(clientSocket, buf, sizeof(buf), 0);
 			
-			for (int i = 0; i < numberOfExistedMsgs; i++) {
-				send(clientSocket, existedMsgs[i], sizeof(existedMsgs[i]), 0);
-			}
-			// PRINT_READ_SUC;
+		// 	for (int i = 0; i < numberOfExistedMsgs; i++) {
+		// 		send(clientSocket, existedMsgs[i], sizeof(existedMsgs[i]), 0);
+		// 	}
+		// 	// PRINT_READ_SUC;
 
-			usleep(500);
-			send(clientSocket, specialMsg, sizeof(specialMsg), 0);
-		}
-		else if (buf[0] == 'w') {
-			usleep(500);
-			send(clientSocket, specialMsg, sizeof(specialMsg), 0);
+		// 	usleep(500);
+		// 	send(clientSocket, specialMsg, sizeof(specialMsg), 0);
+		// }
+		// else if (buf[0] == 'w') {
+		// 	usleep(500);
+		// 	send(clientSocket, specialMsg, sizeof(specialMsg), 0);
 
-			bytesRead = recv(clientSocket, buf, sizeof(buf), 0);
-			strcpy(existedMsgs[numberOfExistedMsgs], buf);
-			numberOfExistedMsgs += 1;
-			// PRINT_UPDATE_SUC;
+		// 	bytesRead = recv(clientSocket, buf, sizeof(buf), 0);
+		// 	strcpy(existedMsgs[numberOfExistedMsgs], buf);
+		// 	numberOfExistedMsgs += 1;
+		// 	// PRINT_UPDATE_SUC;
 
-			usleep(500);
-			send(clientSocket, specialMsg, sizeof(specialMsg), 0);
-		}
-		else if (buf[0] == 'c') {
-			numberOfExistedMsgs = 0;
-			// PRINT_CLEAR_ALL_SUC;
+		// 	usleep(500);
+		// 	send(clientSocket, specialMsg, sizeof(specialMsg), 0);
+		// }
+		// else if (buf[0] == 'c') {
+		// 	numberOfExistedMsgs = 0;
+		// 	// PRINT_CLEAR_ALL_SUC;
 
-			usleep(500);
-			send(clientSocket, specialMsg, sizeof(specialMsg), 0);
-		}
+		// 	usleep(500);
+		// 	send(clientSocket, specialMsg, sizeof(specialMsg), 0);
+		// }
 	}
 	close(clientSocket);
   	return 0;

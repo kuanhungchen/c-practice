@@ -41,52 +41,66 @@ int main(int argc , char *argv[]) {
 		buf[0] = '\0';
 		while (buf[0] != 'X') bytesRead = recv(serverSocket, buf, sizeof(buf), 0);
 
-		// PRINT_MENU;
+		// catch input
 		scanf("%s", buf);
-		while ((buf[0] != 'r' && buf[0] != 'w' && buf[0] != 'c' && buf[0] != 'q') || buf[1] != '\0') {
-			// PRINT_INVALID_CHOICE;
-			scanf("%s", buf);
-		}
-		if (buf[0] == 'q') {
-			DISCONNECT(serverPort);
-		}
-		buf[1] = '\0';
+		// send to server
 		send(serverSocket, buf, sizeof(buf), 0);
+		printf("Sent to server: %s\n", buf);
+		buf[0] = 'x';
+		buf[1] = 'y';
+		buf[2] = 'z';
+		buf[3] = '\0';
+
+		// receive from server
+		bytesRead = recv(serverSocket, buf, sizeof(buf), 0);
+		printf("Received from server: %s\n", buf);
+
+		// PRINT_MENU;
+		// scanf("%s", buf);
+		// while ((buf[0] != 'r' && buf[0] != 'w' && buf[0] != 'c' && buf[0] != 'q') || buf[1] != '\0') {
+		// 	// PRINT_INVALID_CHOICE;
+		// 	scanf("%s", buf);
+		// }
+		// if (buf[0] == 'q') {
+		// 	DISCONNECT(serverPort);
+		// }
+		// buf[1] = '\0';
+		// send(serverSocket, buf, sizeof(buf), 0);
 		
-		if (buf[0] == 'r') {
-			usleep(500);
-			send(serverSocket, specialMsg, sizeof(specialMsg), 0);
-			printf("|-------------------------------------------|\n");
-			printf(" All messages:\n");
+		// if (buf[0] == 'r') {
+		// 	usleep(500);
+		// 	send(serverSocket, specialMsg, sizeof(specialMsg), 0);
+		// 	printf("|-------------------------------------------|\n");
+		// 	printf(" All messages:\n");
 			
-			bytesRead = recv(serverSocket, buf, sizeof(buf), 0);
-			int i = 1;
-			while (buf[0] != 'X') {
-				printf(" %d.%s\n", i, buf);
-				bytesRead = recv(serverSocket, buf, sizeof(buf), 0);
-				i += 1;
-			}
-			if (i == 1) printf(" No existing messages.\n");
-			printf("\n");
-		}
-		else if (buf[0] == 'w') {
-			buf[0] = '\0';
-			while (buf[0] != 'X') recv(serverSocket, buf, sizeof(buf), 0);
+		// 	bytesRead = recv(serverSocket, buf, sizeof(buf), 0);
+		// 	int i = 1;
+		// 	while (buf[0] != 'X') {
+		// 		printf(" %d.%s\n", i, buf);
+		// 		bytesRead = recv(serverSocket, buf, sizeof(buf), 0);
+		// 		i += 1;
+		// 	}
+		// 	if (i == 1) printf(" No existing messages.\n");
+		// 	printf("\n");
+		// }
+		// else if (buf[0] == 'w') {
+		// 	buf[0] = '\0';
+		// 	while (buf[0] != 'X') recv(serverSocket, buf, sizeof(buf), 0);
 
-			// PRINT_NEW_MSG_HINT;
-			scanf("%s", buf);
-			send(serverSocket, buf, sizeof(buf), 0);
+		// 	// PRINT_NEW_MSG_HINT;
+		// 	scanf("%s", buf);
+		// 	send(serverSocket, buf, sizeof(buf), 0);
 
-			buf[0] = '\0';
-			while (buf[0] != 'X') recv(serverSocket, buf, sizeof(buf), 0);
+		// 	buf[0] = '\0';
+		// 	while (buf[0] != 'X') recv(serverSocket, buf, sizeof(buf), 0);
 
-			// PRINT_NEW_MSG_SUC;
-		}
-		else if (buf[0] == 'c') {
-			buf[0] = '\0';
-			while (buf[0] != 'X') bytesRead = recv(serverSocket, buf, sizeof(buf), 0);
-			// PRINT_CLEAR_ALL_SUC;
-		}
+		// 	// PRINT_NEW_MSG_SUC;
+		// }
+		// else if (buf[0] == 'c') {
+		// 	buf[0] = '\0';
+		// 	while (buf[0] != 'X') bytesRead = recv(serverSocket, buf, sizeof(buf), 0);
+		// 	// PRINT_CLEAR_ALL_SUC;
+		// }
 	}
 	DISCONNECT(serverPort);
 }
