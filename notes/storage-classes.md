@@ -10,9 +10,9 @@ Storage classes are used to describe/define the **scope**, **visibility** and **
 
 - This can only be used to define variables.
 - This is the **default** for all variables declared inside a function or a block.
-- Scope: within function/block
+- Scope: within block
 - Initial value: garbage
-- Life: end of function/block
+- Life: end of block
 
 ### extern
 
@@ -31,6 +31,14 @@ Storage classes are used to describe/define the **scope**, **visibility** and **
 - Static variables have a property of preserving their value even after they are out of their scope.
 - Scope: within block
 - Initial value: zero
-Life: end of program
+- Life: end of program
 
 ### register
+
+- This can only be used to define variables.
+- Use this to ask compiler to try to store these variables in the register of the microprocessor if a free register is available.
+- Usually few variables are to be accessed very frequently in a program are declared with the register keyword which improves the running time.
+- Of course we cannot obtain the address of a register variable using pointers.
+- Scope: within block
+- Initial value: garbage
+- Life: end of block
