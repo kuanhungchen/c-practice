@@ -35,30 +35,29 @@ int main(int argc , char *argv[]) {
 	}
 
 	int clients[3];
-	
+	int numOfClients = 0;
 	
 	for (int i=0; i<2; i++) {
-		printf("Waiting for connection...\n");
 		clientAddressLen = sizeof(clientAddress);
 		clientSocket = accept(serverSocket, (struct sockaddr*)&clientAddress, &clientAddressLen);
-	
-		printf("%d\n", clientSocket);
-		printf("Successfully connected, client IP is: %s\n", inet_ntoa(clientAddress.sin_addr));
+		clients[i] = clientSocket;
+		numOfClients += 1;
+		printf("The %d client is conencted, from IP: %s\n", i, inet_ntoa(clientAddress.sin_addr));
 	}
 	
 
 	while (1) {
 		
 		usleep(500);
-		send(clientSocket, specialMsg, sizeof(specialMsg), 0);
-
-		buf[0] = '\0';
-		usleep(500);
+		
 		// receive from client
-		bytesRead = recv(clientSocket, buf, sizeof(buf), 0);
-		printf("Received from client: %s", buf);
-
-		usleep(500);
+		int i=0;
+		while (i<numOfClients) {
+			bytesRead = recv(clients[i], buf, sizeof(buf), 0);
+			printf("Received from client %d: %s", i, buf);
+			usleep(500);
+		}
+		
 		// send back to client
 		send(clientSocket, buf, sizeof(buf), 0);
 		printf("Sent to client: %s", buf);
